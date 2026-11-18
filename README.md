@@ -1,9 +1,7 @@
 # AnalisisDeDatos
 # Prediccion de congestion en un enlace LAN
 
-Laboratorio de analisis de datos en redes. Captura de trafico UDP con iperf3, construccion de una serie temporal a partir de la traza y regresion lineal para estimar los descartes de la cola de salida en el siguiente intervalo.
-
-El informe completo en PDF esta en `informe/Informe_prediccion_congestion_LAN.pdf`.
+Laboratorio de analisis de datos en redes. Captura de trafico UDP con iperf3
 
 ## Contenido del repositorio
 
@@ -22,14 +20,13 @@ Se usaron dos equipos en la misma red del router: un emisor Linux (A) que aplica
 
 | Equipo | Rol | Sistema | Direccion IP | Software |
 |---|---|---|---|---|
-| A | Emisor, cola TBF, captura y muestreo | Ubuntu Server 26.04 LTS en una maquina virtual de VirtualBox, sobre un PC con Windows | 192.168.20.61 (interfaz enp0s8) | iperf3 (cliente), tc, tcpdump, tshark, Python con pandas y scikit-learn |
+| A | Emisor, cola TBF, captura y muestreo | Ubuntu Server 26.04 LTS en una maquina virtual de VirtualBox, sobre un PC con Windows | 192.168.20.61  | iperf3 (cliente), tc, tcpdump, tshark, Python con pandas y scikit-learn |
 | B | Receptor | MacBook con macOS | 192.168.20.189 | iperf3 (servidor), compilado desde el codigo fuente |
 
-La VM tiene dos adaptadores. El adaptador NAT (enp0s3) solo se uso para instalar paquetes y conectarse por SSH. El trafico del experimento sale por enp0s8, un adaptador en modo puente conectado a la red del router, y en esa interfaz se aplica la cola.
+La VM tiene dos adaptadores. El adaptador NAT solo se uso para instalar paquetes y conectarse por SSH, un adaptador en modo puente conectado a la red del router, y en esa interfaz se aplica la cola.
 
 El MacBook no tiene puerto Ethernet, asi que B se conecto por WiFi al mismo router. Esto difiere del enlace Ethernet directo del enunciado y se discute al final.
 
-La disciplina de cola original de enp0s8 antes del experimento era pfifo_fast. Al terminar se retira la cola experimental con `tc qdisc del dev enp0s8 root`.
 
 Interfaces de A antes de configurar enp0s8:
 
