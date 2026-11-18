@@ -3,17 +3,6 @@
 
 Laboratorio de analisis de datos en redes. Captura de trafico UDP con iperf3
 
-## Contenido del repositorio
-
-```
-README.md
-informe/     informe en PDF
-capturas/    pantallazos del montaje y de las pruebas
-codigo/      scripts de captura, construccion de ventanas, modelo y graficas
-datos/       por corrida: traza pcap, registro de cola, CSV de paquetes, JSON de iperf3 y calendario
-resultados/  CSV de ventanas, metricas y graficas temporales
-```
-
 ## 1. Topologia y montaje
 
 Se usaron dos equipos en la misma red del router: un emisor Linux (A) que aplica la cola y hace la captura, y un receptor (B) que ejecuta el servidor de iperf3.
