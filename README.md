@@ -30,7 +30,8 @@ El MacBook no tiene puerto Ethernet, asi que B se conecto por WiFi al mismo rout
 
 Interfaces de A antes de configurar enp0s8:
 
-![Interfaces de A](capturas/01_interfaces_iniciales.png)
+![Interfaces de A](<img width="1015" height="91" alt="01_interfaces_iniciales" src="https://github.com/user-attachments/assets/6f155584-6df2-47e5-bdda-deb6e4738298" />
+)
 
 Configuracion de enp0s8 con netplan usando la IP fija del enunciado (192.168.50.10/24). Despues enp0s8 quedo en modo puente con la red del router, con la IP 192.168.20.61 que se uso en las corridas:
 
