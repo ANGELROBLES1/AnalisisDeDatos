@@ -28,14 +28,15 @@ La VM tiene dos adaptadores. El adaptador NAT solo se uso para instalar paquetes
 El MacBook no tiene puerto Ethernet, asi que B se conecto por WiFi al mismo router. Esto difiere del enlace Ethernet directo del enunciado y se discute al final.
 
 
-Interfaces de A antes de configurar enp0s8:
+Interfaces de A:
 
-<img width="1015" height="91" alt="01_interfaces_iniciales" src="https://github.com/user-attachments/assets/2383eb99-9421-408c-a01c-6360bbcaa9cb" />
+!<img width="1015" height="91" alt="01_interfaces_iniciales" src="https://github.com/user-attachments/assets/2383eb99-9421-408c-a01c-6360bbcaa9cb" />
 
 
 Configuracion de enp0s8 con netplan usando la IP fija del enunciado (192.168.50.10/24). Despues enp0s8 quedo en modo puente con la red del router, con la IP 192.168.20.61 que se uso en las corridas:
 
-![Netplan en A](capturas/02_netplan_ip_fija.png)
+!<img width="1137" height="767" alt="02_netplan_ip_fija" src="https://github.com/user-attachments/assets/9cc3afd3-d740-47e2-8d13-24cbfaffd40c" />
+
 
 Verificacion de conectividad con ping y prueba corta de iperf3 a 8 Mbit/s desde A hacia B:
 
