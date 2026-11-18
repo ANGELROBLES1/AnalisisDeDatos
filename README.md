@@ -30,41 +30,36 @@ El MacBook no tiene puerto Ethernet, asi que B se conecto por WiFi al mismo rout
 
 Interfaces de A:
 
-!<img width="1015" height="91" alt="01_interfaces_iniciales" src="https://github.com/user-attachments/assets/2383eb99-9421-408c-a01c-6360bbcaa9cb" />
+<img width="1015" height="91" alt="01_interfaces_iniciales" src="https://github.com/user-attachments/assets/2383eb99-9421-408c-a01c-6360bbcaa9cb" />
 
 
-Configuracion de enp0s8 con netplan usando la IP fija del enunciado (192.168.50.10/24). Despues enp0s8 quedo en modo puente con la red del router, con la IP 192.168.20.61 que se uso en las corridas:
+Configuracion con netplan usando la IP fija del enunciado (192.168.50.10/24). Despues quedo en modo puente con la red del router, con la IP 192.168.20.61 que se uso en las corridas:
 
-!<img width="1137" height="767" alt="02_netplan_ip_fija" src="https://github.com/user-attachments/assets/9cc3afd3-d740-47e2-8d13-24cbfaffd40c" />
+<img width="1137" height="767" alt="02_netplan_ip_fija" src="https://github.com/user-attachments/assets/9cc3afd3-d740-47e2-8d13-24cbfaffd40c" />
 
 
 Verificacion de conectividad con ping y prueba corta de iperf3 a 8 Mbit/s desde A hacia B:
 
-![Ping e iperf3 en A](capturas/03_ping_iperf3_cliente_A.png)
+<img width="1122" height="581" alt="03_ping_iperf3_cliente_A" src="https://github.com/user-attachments/assets/722369b1-7514-44a9-923c-08ebecf63432" />
+
 
 Salida del servidor iperf3 en B para esa misma prueba:
+<img width="643" height="269" alt="04_iperf3_servidor_B" src="https://github.com/user-attachments/assets/6fa18eac-97a0-47ca-bfbb-2f381f4e2045" />
 
-![Servidor iperf3 en B](capturas/04_iperf3_servidor_B.png)
 
 ## 2. Protocolo y perfiles de carga
 
-Se hicieron seis corridas independientes de entre 110 y 205 s, con cola, captura y muestreo continuos, en las que A envia trafico UDP a B por el puerto 5201.
+Se hicieron seis corridas independientes de entre 110 y 205 s, con cola, captura y muestreo continuos, en las que A envia trafico a B por el puerto 5201.
 
-**Cola.** En enp0s8 se aplico una cola TBF de 10 Mbit/s antes de cada corrida, con el contador de descartes en cero. El enunciado propone burst de 16 kb y limite de 32 kb; las corridas finales usaron burst de 32 kb y limite de 128 kb (ver desviaciones).
+**Cola.**  se aplico una cola TBF de 10 Mbit/s antes de cada corrida, con el contador de descartes en cero. El enunciado propone burst de 16 kb y limite de 32 kb. Las corridas finales usaron burst de 32 kb y limite de 128 kb.
 
-```
-tc qdisc add dev enp0s8 root handle 10: tbf rate 10mbit burst 32kb limit 128kb
-```
 
-**Trafico.** Cada fase es un cliente de iperf3 en UDP con datagramas de 1200 bytes, intervalos de 1 s y salida en JSON. Se uso un buffer de envio de 4 MB (`-w 4M`) con `net.core.wmem_max` en 8388608; sin el, el emisor se frenaba solo y nunca llenaba la cola.
+**Trafico.** Cada fase es un cliente de iperf3 con datagramas de 1200 bytes, intervalos de 1 s y salida en JSON. Se uso un buffer de envio de 4 MB (`-w 4M`) con `net.core.wmem_max` en 8388608; sin el, el emisor se frenaba solo y nunca llenaba la cola.
 
-```
-iperf3 -c 192.168.20.189 -u -b <tasa>M -l 1200 -t <segundos> -i 1 -w 4M --get-server-output -J
-```
 
-**Captura.** tcpdump en enp0s8 con `-s 96 -B 4096`, filtrando UDP del emisor al receptor en el puerto 5201. Se exporto con tshark la hora y la longitud de trama de cada paquete. En el ensayo de verificacion tcpdump capturo 13629 paquetes y el kernel no descarto ninguno. Las perdidas de captura de cada corrida final quedan registradas en su archivo de resumen de tcpdump.
+**Captura.** tcpdump con `-s 96 -B 4096`, filtrando UDP del emisor al receptor en el puerto 5201. Se exporto con tshark la hora y la longitud de trama de cada paquete. En el ensayo de verificacion tcpdump capturo 13629 paquetes y el kernel no descarto ninguno. Las perdidas de captura de cada corrida final quedan registradas en su archivo de resumen de tcpdump.
 
-**Muestreo de la cola.** Cada segundo, `tc -j -s qdisc show` guarda el contador acumulado de descartes de la cola `tbf 10:`, con su hora Unix.
+**Muestreo de la cola.** Cada segundo, `tc -j -s qdisc show` guarda el contador acumulado de descartes de la cola `tbf 10:`.
 
 **Calendario.** Cada corrida guarda en un CSV la hora de inicio y de fin de cada fase. Se usa para interpretar los resultados y no entra como variable del modelo. Si iperf3 fallaba al empezar una fase (servidor ocupado), el script reintentaba.
 
@@ -141,13 +136,6 @@ Para cada corrida de prueba, el script del modelo genera una figura de tres pane
 - Panel central: descartes reales por ventana y descartes pronosticados, con cada pronostico ubicado en la ventana a la que se refiere (k+1), en escala logaritmica simetrica.
 - Panel inferior: alertas (y >= umbral) e inicios observados, marcados con triangulos.
 
-Corrida c05:
-
-![Grafica c05](resultados/grafica_c05.png)
-
-Corrida c06:
-
-![Grafica c06](resultados/grafica_c06.png)
 
 ## 6. Discusion
 
